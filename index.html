@@ -1,0 +1,129 @@
+<html>
+
+<head>
+  <script src="https://jspreadsheet.com/v7/jspreadsheet.js"></script>
+  <script src="https://jsuites.net/v4/jsuites.js"></script>
+  <link rel="stylesheet" href="https://jsuites.net/v4/jsuites.css" type="text/css" />
+  <link rel="stylesheet" href="https://jspreadsheet.com/v7/jspreadsheet.css" type="text/css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <style>
+    html {
+      font-family: 'Roboto', sans-serif;
+    }
+
+    body {
+      width: 1000px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="spreadsheet"></div>
+</body>
+
+
+<script>
+  var data = [
+    ['Симонов Панкрат Давидович', 10, 23, 52, '=AVGCOL(TABLE(),COLUMN(),ROW())', '=SUMCOL(TABLE(),COLUMN(),ROW())'],
+    ['Белов Аристарх Дмитрьевич', 5, 33, 42, '=AVGCOL(TABLE(),COLUMN(),ROW())', '=SUMCOL(TABLE(),COLUMN(),ROW())'],
+    ['Горбунов Феликс Иосифович', 5, 42, 16, '=AVGCOL(TABLE(),COLUMN(),ROW())', '=SUMCOL(TABLE(),COLUMN(),ROW())'],
+    ['Зайцев Степан Дмитрьевич', 10, 11, 53, '=AVGCOL(TABLE(),COLUMN(),ROW())', '=SUMCOL(TABLE(),COLUMN(),ROW())'],
+    ['Суханов Анатолий Фролович', 10, 11, 53, '=AVGCOL(TABLE(),COLUMN(),ROW())', '=SUMCOL(TABLE(),COLUMN(),ROW())']
+  ];
+
+  //сумма за все лабораторные
+  var SUMCOL = function (instance, columnId, rowId) {
+    var total = 0;
+    for (var j = 1; j < 4; j++) {
+      total += Number(instance.records[rowId - 1][columnId - 2 - j].element.innerHTML);
+    }
+    return total;
+  }
+
+  //средняя оценка по группе за лабораторную 
+  var SUMCOLX = function (instance, columnId) {
+    var total = 0;
+    var count = 0;
+    for (var j = 0; j < instance.options.data.length; j++) {
+      if (Number(instance.records[j][columnId - 1].element.innerHTML)) {
+        count++;
+        total += Number(instance.records[j][columnId - 1].element.innerHTML);
+      }
+    }
+    return total / count;
+  }
+
+  //кол-во студентов
+  var COUNTSTUD = function (instance, columnId) {
+    var count = 0;
+    for (var j = 0; j < instance.options.data.length; j++) {
+      if (instance.records[j][columnId - 1].element.innerHTML != '') {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  //cредняя оценка за лабораторную у одного студента
+  var AVGCOL = function (instance, columnId, rowId) {
+    var total = 0;
+    for (var j = 1; j < 4; j++) {
+      total += Number(instance.records[rowId - 1][columnId - 1 - j].element.innerHTML);
+    }
+    total = total / 3
+    return total.toFixed(2);
+  }
+
+  var table1 = jspreadsheet(document.getElementById('spreadsheet'), {
+    data: data,
+    footers: [
+      [
+        '=COUNTSTUD(TABLE(), COLUMN())',
+        '=SUMCOLX(TABLE(), COLUMN())',
+        '=SUMCOLX(TABLE(), COLUMN())',
+        '=SUMCOLX(TABLE(), COLUMN())'
+      ]
+    ],
+    columns: [
+      {
+        type: 'text',
+        title: 'Cтудент',
+        width: 300
+      },
+      {
+        type: 'numeric',
+        title: 'ЛР1',
+        width: 120,
+      },
+      {
+        type: 'numeric',
+        title: 'ЛР2',
+        width: 120,
+      },
+      {
+        type: 'numeric',
+        title: 'ЛР3',
+        width: 120,
+      },
+      {
+        type: 'numeric',
+        title: 'Среднее',
+        width: 120,
+      },
+      {
+        type: 'numeric',
+        title: 'Сумма',
+        width: 120,
+      },
+    ],
+    onchange: function () {
+      table1.refresh();
+    },
+    license: 'MWEzMTE4MGFkNWY5YzQzNjE4NjZiNmE1NThhM2M0Yjc1NmUyNGM2N2YzZjU2NDQ5ZjM1MGFiYWNmOTFkNTkwODFiYmYwNDE1YjhhM2ViNGUyMzM2YjYzY2Q4NTcyMWE4MGQ4YjVjNjI2NWY4NWYyMTBjMWU5M2ZmNTU4OGI1MDQsZXlKdVlXMWxJam9pY0dGMWJDNW9iMlJsYkNJc0ltUmhkR1VpT2pFMk5UZzVOakk0TURBc0ltUnZiV0ZwYmlJNld5SnFjM0J5WldGa2MyaGxaWFF1WTI5dElpd2lZM05pTG1Gd2NDSXNJbXB6YUdWc2JDNXVaWFFpTENKc2IyTmhiR2h2YzNRaVhTd2ljR3hoYmlJNklqSWlMQ0p6WTI5d1pTSTZXeUoyTnlJc0luWTRJaXdpY0dGeWMyVnlJaXdpYzJobFpYUnpJaXdpWm05eWJYTWlMQ0p5Wlc1a1pYSWlMQ0ptYjNKdGRXeGhJbDE5',
+  });
+</script>
+
+</html>
